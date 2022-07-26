@@ -26,7 +26,7 @@ resource "aws_autoscaling_group" "autoscaling_group" {
 
   # Use a fixed-size cluster
   min_size             = var.cluster_size
-  max_size             = var.cluster_size
+  max_size             = (var.cluster_size * 2) + 1
   desired_capacity     = var.cluster_size
   termination_policies = [var.termination_policies]
 
@@ -137,6 +137,7 @@ resource "aws_launch_configuration" "launch_configuration" {
     volume_type           = var.root_volume_type
     volume_size           = var.root_volume_size
     delete_on_termination = var.root_volume_delete_on_termination
+    encrypted             = var.root_volume_encrypted
   }
 
   # Important note: whenever using a launch configuration with an auto scaling group, you must set

@@ -137,6 +137,11 @@ variable "root_volume_ebs_optimized" {
   default     = false
 }
 
+variable "root_volume_encrypted" {
+  description = "If true, the launched EC2 instance will have encrypted EBS root volume."
+  default     = "true"
+}
+
 variable "root_volume_type" {
   description = "The type of volume. Must be one of: standard, gp2, or io1."
   default     = "standard"
