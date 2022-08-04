@@ -25,7 +25,7 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   vpc_zone_identifier = var.subnet_ids
 
   # Use a fixed-size cluster
-  min_size             = (var.cluster_size / 2) < 2 ? 1 : (var.cluster_size / 2)
+  min_size             = floor(var.cluster_size / 2) < 2 ? 1 : floor(var.cluster_size / 2)
   max_size             = (var.cluster_size * 2) + 1
   desired_capacity     = var.cluster_size
   termination_policies = [var.termination_policies]
