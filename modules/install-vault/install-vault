@@ -221,6 +221,50 @@ function configure_mlock {
   sudo setcap cap_ipc_lock=+ep $(readlink -f $(which vault))
 }
 
+function install_systemd_unit {
+  if [[ -e "/opt/vault/bin/vault" ]] ; then
+    tee /tmp/vault.service <<SERVICEUNIT
+[Unit]
+Description=\"HashiCorp Vault - A tool for managing secrets\"
+Documentation=https://www.vaultproject.io/docs/
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/opt/vault/config/default.hcl
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+User=vault
+Group=vault
+ProtectSystem=full
+ProtectHome=read-only
+PrivateTmp=yes
+PrivateDevices=yes
+SecureBits=keep-caps
+AmbientCapabilities=CAP_IPC_LOCK
+NoNewPrivileges=yes
+Environment=VAULT_LICENSE_PATH=/opt/vault/license
+ExecStart=/opt/vault/bin/vault server -config /opt/vault/config
+ExecReload=/bin/kill --signal HUP $MAINPID
+KillMode=process
+KillSignal=SIGINT
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+StartLimitInterval=60
+StartLimitBurst=3
+LimitNOFILE=65536
+LimitMEMLOCK=infinity
+
+[Install]
+WantedBy=multi-user.target
+SERVICEUNIT
+  fi
+  [[ -e "/etc/systemd/system/vault.service" ]] || sudo mv /tmp/vault.service /etc/systemd/system/vault.service
+  sudo systemctl enable vault.service
+}
+
+
 function install {
   local version=""
   local download_url=""
@@ -277,7 +321,7 @@ function install {
   fetch_binary "$version" "$download_url"
   install_binary "$path" "$user"
   configure_mlock
-
+  install_systemd_unit
 
   if command -v vault; then
     log_info "Vault install complete!"
