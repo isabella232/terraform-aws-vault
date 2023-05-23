@@ -247,3 +247,9 @@ variable "iam_permissions_boundary" {
   type        = string
   default     = null
 }
+
+variable "protect_from_scale_in" {
+  description = "Whether newly launched instances are automatically protected from termination by Amazon EC2 Auto Scaling when scaling in."
+  type        = bool
+  default     = false
+}
