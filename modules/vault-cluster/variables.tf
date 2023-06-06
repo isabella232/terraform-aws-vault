@@ -253,3 +253,9 @@ variable "protect_from_scale_in" {
   type        = bool
   default     = false
 }
+
+variable "capacity_rebalance" {
+  description = "(Optional) Whether capacity rebalance is enabled. Otherwise, capacity rebalance is disabled."
+  type        = bool
+  default     = true
+}
