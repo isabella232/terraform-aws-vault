@@ -30,6 +30,7 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   desired_capacity      = var.cluster_size
   termination_policies  = [var.termination_policies]
   protect_from_scale_in = var.protect_from_scale_in
+  capacity_rebalance    = var.capacity_rebalance
 
   health_check_type         = var.health_check_type
   health_check_grace_period = var.health_check_grace_period
