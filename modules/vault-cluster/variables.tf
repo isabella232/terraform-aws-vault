@@ -255,7 +255,7 @@ variable "protect_from_scale_in" {
 }
 
 variable "capacity_rebalance" {
-  description = "(Optional) Whether capacity rebalance is enabled. Otherwise, capacity rebalance is disabled."
+  description = "(Optional) If enabled AWS ASG will attempt to proactively replace/terminate the Instances in your group that have received a rebalance recommendation to enhance availability by deploying across multiple instance types running in multiple Availability Zones"
   type        = bool
   default     = true
 }
