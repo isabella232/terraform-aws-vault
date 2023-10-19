@@ -97,11 +97,6 @@ variable "security_group_tags" {
   default     = {}
 }
 
-variable "cluster_tag_key" {
-  description = "Add a tag with this key and the value var.cluster_name to each Instance in the ASG."
-  default     = "Name"
-}
-
 variable "cluster_extra_tags" {
   description = "A list of additional tags to add to each Instance in the ASG. Each element in the list must be a map with the keys key, value, and propagate_at_launch"
   type        = list(object({ key : string, value : string, propagate_at_launch : bool }))
@@ -258,4 +253,13 @@ variable "capacity_rebalance" {
   description = "(Optional) If enabled AWS ASG will attempt to proactively replace/terminate the Instances in your group that have received a rebalance recommendation to enhance availability by deploying across multiple instance types running in multiple Availability Zones"
   type        = bool
   default     = false
+}
+
+variable "log_group" {
+  description = "CloudWatch Log Group for cluster"
+  type        = string
+}
+
+variable "hosted_zone_id" {
+  type        = string
 }

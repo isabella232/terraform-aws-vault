@@ -43,8 +43,32 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   # Otherwise Vault might boot and not find the bucket or not yet have the necessary permissions
   # Not using `depends_on` because these resources might not exist
   tag {
-    key                 = var.cluster_tag_key
+    key                 = "SSMSessionRunAs"
+    value               = "admin-super"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "vault_cluster_name"
     value               = var.cluster_name
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "log_group"
+    value               = var.log_group
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "vault_unseal_key"
+    value               = var.auto_unseal_kms_key_arn
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "dns_zoneid"
+    value               = var.auto_unseal_kms_key_arn
     propagate_at_launch = true
   }
 
@@ -86,7 +110,6 @@ resource "aws_autoscaling_group" "autoscaling_group" {
       propagate_at_launch = tag.value.propagate_at_launch
     }
   }
-
 
   lifecycle {
     # aws_launch_configuration.launch_configuration in this module sets create_before_destroy to true, which means
@@ -140,6 +163,12 @@ resource "aws_launch_configuration" "launch_configuration" {
     volume_size           = var.root_volume_size
     delete_on_termination = var.root_volume_delete_on_termination
     encrypted             = var.root_volume_encrypted
+  }
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
   }
 
   # Important note: whenever using a launch configuration with an auto scaling group, you must set
