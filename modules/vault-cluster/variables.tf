@@ -97,11 +97,6 @@ variable "security_group_tags" {
   default     = {}
 }
 
-variable "cluster_tag_key" {
-  description = "Add a tag with this key and the value var.cluster_name to each Instance in the ASG."
-  default     = "Name"
-}
-
 variable "cluster_extra_tags" {
   description = "A list of additional tags to add to each Instance in the ASG. Each element in the list must be a map with the keys key, value, and propagate_at_launch"
   type        = list(object({ key : string, value : string, propagate_at_launch : bool }))

@@ -43,12 +43,6 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   # Otherwise Vault might boot and not find the bucket or not yet have the necessary permissions
   # Not using `depends_on` because these resources might not exist
   tag {
-    key                 = var.cluster_tag_key
-    value               = var.cluster_name
-    propagate_at_launch = true
-  }
-
-  tag {
     key                 = "using_s3_bucket_backend"
     value               = element(concat(aws_iam_role_policy.vault_s3.*.name, [""]), 0)
     propagate_at_launch = true
@@ -140,6 +134,12 @@ resource "aws_launch_configuration" "launch_configuration" {
     volume_size           = var.root_volume_size
     delete_on_termination = var.root_volume_delete_on_termination
     encrypted             = var.root_volume_encrypted
+  }
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
   }
 
   # Important note: whenever using a launch configuration with an auto scaling group, you must set
