@@ -43,36 +43,6 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   # Otherwise Vault might boot and not find the bucket or not yet have the necessary permissions
   # Not using `depends_on` because these resources might not exist
   tag {
-    key                 = "SSMSessionRunAs"
-    value               = "admin-super"
-    propagate_at_launch = true
-  }
-
-  tag {
-    key                 = "vault_cluster_name"
-    value               = var.cluster_name
-    propagate_at_launch = true
-  }
-
-  tag {
-    key                 = "log_group"
-    value               = var.log_group
-    propagate_at_launch = true
-  }
-
-  tag {
-    key                 = "vault_unseal_key"
-    value               = var.auto_unseal_kms_key_arn
-    propagate_at_launch = true
-  }
-
-  tag {
-    key                 = "dns_zoneid"
-    value               = var.auto_unseal_kms_key_arn
-    propagate_at_launch = true
-  }
-
-  tag {
     key                 = "using_s3_bucket_backend"
     value               = element(concat(aws_iam_role_policy.vault_s3.*.name, [""]), 0)
     propagate_at_launch = true
@@ -110,6 +80,7 @@ resource "aws_autoscaling_group" "autoscaling_group" {
       propagate_at_launch = tag.value.propagate_at_launch
     }
   }
+
 
   lifecycle {
     # aws_launch_configuration.launch_configuration in this module sets create_before_destroy to true, which means
