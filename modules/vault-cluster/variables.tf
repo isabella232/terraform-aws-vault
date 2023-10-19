@@ -254,12 +254,3 @@ variable "capacity_rebalance" {
   type        = bool
   default     = false
 }
-
-variable "log_group" {
-  description = "CloudWatch Log Group for cluster"
-  type        = string
-}
-
-variable "hosted_zone_id" {
-  type        = string
-}
